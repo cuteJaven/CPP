@@ -2,18 +2,19 @@
 using namespace std;
 int main()
 {
-	cout << "Please input three numbers" << endl;
-	int h[3];
-	for (int i = 0; i < 3; i++)
+	int a = 100, i = 0;
+	int j, k, l;
+	do
 	{
-		cin >> h[i];
-	}
-	
-}
-int top_down(int a[])
-{
-	int len = sizeof(a) / sizeof(a[0]);
-	if (len == 1)
-		return a[0];
-	top_down()
+		j = a % 10;
+		k = (a - j) / 10 % 10;
+		l = a - (a % 100) / 100;
+		if ((j ^ 3 + k ^ 3 + l ^ 3) == a)
+		{
+			cout << a << endl;
+			i++;
+		}
+		a++;
+	} while (a < 1000);
+	cout << i << endl;
 }
