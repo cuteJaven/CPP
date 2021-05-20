@@ -1,0 +1,277 @@
+# C++ 基础入门
+
+## C++ 初识
+
+- 第一个 C++ 程序
+
+```cpp
+#include <iostream>
+using namespace std;
+int main()
+{
+    cout << "Hello, world" << endl;
+    return 0;
+}
+```
+
+- 变量
+
+```cpp
+int a = 2;
+cout << "a= " << a << endl;
+```
+
+- 常量
+
+\#define 宏常量 `#define 常量名 常量值`
+
+```cpp
+#define day 7
+```
+
+const 修饰的变量`const 数据类型 常量名 = 常量值`
+
+```cpp
+const int day 7
+```
+
+- 关键字
+
+```cpp
+auto
+typedef
+inline
+static
+```
+
+- 标识符命名规则
+  - 不能是关键字
+  - 智能由字母、数字、下划线组成
+  - 第一个字符必须为字母或下划线
+  - 标识符中字母区分大小写
+
+## 数据类型
+
+### 整型
+
+|数据类型|占用空间|取值范围|
+|----|----|----|
+|short|2 字节|$-2^{15}$~$2^{15}-1$|
+|int|4 字节|$-2^{31}$~$2^{31}-1$|
+|long|win 4 字节，Linux32 位 4 字节 64 位 8 字节|$-2^{31}$~$2^{31}-1$|
+|long long|8 字节|$-2^{63}$~$2^{63}-1$|
+
+### sizeof 关键字
+
+统计数据类型所占内存大小 `sizeof（数据类型 or 变量）`
+
+```cpp
+cout << "short类所占内存空间为：" << sizeof(short) << endl;
+```
+
+### 浮点型
+
+- 单精度浮点 float
+- 双精度浮点 double
+
+|数据类型|占用空间|取值范围|
+|----|----|----|
+|float|4 字节|7 位有效数字|
+|double|8 字节|15~16 位有效数字|
+默认情况下，输出一个小数，会显示 6 位有效数字
+
+```cpp
+float f1 = 3.14f;
+double f2 = 3.14;
+```
+
+**补充**：科学计数法
+
+```cpp
+float f2 = 3e2 //3*10^2
+```
+
+### 字符型
+
+用于显示**单个**字符，占 1 个字节
+语法：`char ch = 'a';`**不能用双引号**
+字符型变量并不是把字符本身放到内存中存储，而是将对应的 ASCII 码放入到存储单元
+> 常用 ascii 码
+> a=97, A=65, space=32
+
+#### 转义字符
+
+|转义字符|含义|ascii 码|
+|----|----|----|
+|\n|换行 (LF) 将当前位置移动到下一行开头|010|
+|\r|回车 (CR) 将当前位置移到本行开头|013|
+|\t|水平制表 (HT) 跳到下一个 TAB 位置|009|
+
+### 字符串型
+
+两种风格
+
+1. C 风格：`char 变量名[] = "字符串值"`**必须用双引号**
+2. C++ 风格：`string 变量名 = "字符串值"`
+  但是在使用 2 时需要包含头文件`#include <string>`
+
+### 布尔类型 bool
+
+只有两个值，`true`和`false`，占一个字节大小
+
+### 数据输入
+
+```cpp
+int a = 0;
+cout << "please input an integer" << endl;
+cin >> a;
+cout << a << endl;
+```
+
+## 运算符
+
+|类型|作用|举例|
+|----|----|----|
+|算术|处理四则运算|+-*/%,++,--|
+|赋值|将表达式的值赋值给变量|=,+=,-=,*=,/=,%=|
+|比较|比较表达式并返回 true 或 false|==,>,<,!=|
+|逻辑|逻辑运算与或非|&&,\|\|,!|
+
+## 程序流程结构
+
+顺序结构|选择结构|循环结构
+
+### 选择结构
+
+1. if 语句`if(){}else if(){}else{}`
+
+2. 三目运算符`表达式 1? 表达式 2: 表达式 3`
+
+3. switch 语句
+
+```cpp
+switch()
+{
+  case 1: ;
+  case 2: ;
+}
+```
+
+### 循环结构
+
+1. while 循环语句
+2. for 循环
+
+### 跳转语句
+
+1. break
+2. continue
+3. goto**尽量不要使用**
+
+```cpp
+goto FLAG;
+FLAG:
+```
+
+## 数组
+
+> 数组中每个数据元素都是相同的类型
+> 数组是由连续的内存空间组成的
+
+定义方式
+
+```cpp
+int mylist[9];
+double mylist2[3] = {1.0, 2.1, 3.3};
+char mylist3[] = {'a', 'b'};
+//如果在初始化的时候没有赋值完毕，则空余部分，int会被0填充，double会被0.0...填充，char会被'\0'填充
+int integer[4] = {1, 0, 2};
+```
+
+### 一维数组
+
+- 统计整个数组在内存中的长度
+- 获取数组在内存中的首地址
+- 相邻两元素的地址差 (10 进制）就是前一个元素的内存空间长度
+
+```cpp
+//冒泡排序
+int arr[] = { 1,2,3,4,5,6,7,8,9 };
+int end = sizeof(arr) / sizeof(arr[0]);
+int temp;
+while (end > 0)
+{
+  for (int i = 0; i < end - 1; i++)
+  {
+    if (arr[i] < arr[i + 1])
+    {
+      temp = arr[i];
+      arr[i] = arr[i + 1];
+      arr[i + 1] = temp;
+    }
+
+  }
+  end--;
+}
+```
+
+### 二维数组
+
+格式：`int a[2][3] = { {},{} };`
+**注意**：二维数组的首地址、二维数组第一行的地址、二维数组第一个数的地址，为同一个
+
+## 函数
+
+函数内部只会影响形参，不会影响实参，所以要编辑外部变量，需要用指针
+
+```cpp
+//用指针处理数组的函数
+int myexchange(int* a)
+{
+  int temp = *a;
+  *a = *(a + 1);
+  *(a + 1) = temp;
+  return 0;
+}
+```
+
+将函数写到 main 后面时，需要在 main 前面加一行声明`myexchange(int* a);`
+
+### 函数的分文件编写
+
+1. 创建后缀为`.h`的头文件
+2. 创建后缀名为。cpp 的源文件
+3. 在头文件中写函数的声明
+4. 在源文件中写函数的定义
+
+```cpp
+//header.h
+#include <iostream>
+using namespace std;
+int myexchange(int* a);
+```
+
+```cpp
+//function.cpp
+#include "Header.h"
+int myexchange(int* a)
+{
+  int temp = *a;
+  *a = *(a + 1);
+  *(a + 1) = temp;
+  return 0;
+}
+```
+
+```cpp
+//source.cpp
+#include <iostream>
+using namespace std;
+#include "Header.h"
+int main()
+{
+  int a[] = {1,2};
+  myexchange(a);
+  cout << a[0] << ' ' << a[1] << endl;
+}
+```
