@@ -1,6 +1,18 @@
 # c++ 基础中级
 
-## 指针
+- [1. 指针](#1-指针)
+  - [1.1. 空指针和野指针](#11-空指针和野指针)
+  - [1.2. const 修饰指针](#12-const-修饰指针)
+  - [1.3. 指针和数组](#13-指针和数组)
+  - [1.4. 指针和函数](#14-指针和函数)
+- [2. 结构体](#2-结构体)
+  - [2.1. 结构体数组](#21-结构体数组)
+  - [2.2. 结构体指针](#22-结构体指针)
+  - [2.3. 结构体嵌套结构体](#23-结构体嵌套结构体)
+  - [2.4. 结构体做函数参数](#24-结构体做函数参数)
+  - [2.5. 结构体中 const 使用场景](#25-结构体中-const-使用场景)
+
+## 1. 指针
 
 **指针的作用**：可以通过指针间接访问内存
 
@@ -17,7 +29,7 @@ int* p = &a;
 在 32 位操作系统下，占 4 个字节；在 64 位操作系统下，占 8 个字节。
 与变量类型无关
 
-### 空指针和野指针
+### 1.1. 空指针和野指针
 
 空指针：指针编号指向内存中编号为 0 的空间
 用途：初始化指针变量
@@ -34,7 +46,7 @@ int* p = NULL;
 int* p = (int*)0x1100;
 ```
 
-### const 修饰指针
+### 1.2. const 修饰指针
 
 分为三种情况：
 
@@ -54,7 +66,7 @@ const int* const p;
 > 个人理解：`int*`赋予了指针修改`int`型变量的能力，`p`赋予了指针修改指向的能力
 > `const`修饰谁，谁就被限制了
 
-### 指针和数组
+### 1.3. 指针和数组
 
 因为数组是连续的内存空间，所以用指针获取数组的首地址后，便可以增删改查了
 
@@ -68,7 +80,7 @@ for (int i = 0; i < 5; i++)
 }
 ```
 
-### 指针和函数
+### 1.4. 指针和函数
 
 ```cpp
 // c++实现插入排序
@@ -110,7 +122,76 @@ void quick_sort(int* arr, int len)
 }
 ```
 
-## 结构体
+```cpp
+//c++实现快速排序
+#include <iostream>
+#include <cassert>
+using namespace std;
+
+// 生成有n个元素的随机数组,每个元素的随机范围为[rangeL, rangeR] 闭区间
+int* generateRandomArray(int n, int rangeL, int rangeR) {
+    assert(rangeL <= rangeR);
+
+    int* arr = new int[n]; // 创建一个 n个元素的数组
+
+    srand(time(NULL)); // 随机种子
+    for (int i = 0; i < n; i++)
+        arr[i] = rand() % (rangeR - rangeL + 1) + rangeL;
+    return arr;
+}
+
+int partition(int* li, int left, int right)
+{
+    int mid = *(li+left);
+    while (left < right)
+    {
+        while (left < right && *(li+right) >= mid)
+            --right;
+        if (left >= right)
+            break;
+        *(li+left) = *(li+right);
+        ++left;
+        if (left >= right)
+            break;
+        while (left < right && *(li+left) <= mid)
+            ++left;
+        if (left >= right)
+            break;
+        *(li+right) = *(li+left);
+        --right;
+    }
+    *(li + left) = mid;
+    return left;
+}
+
+void quick_sort(int* li, int left, int right)
+{
+    int mid = partition(li, left, right);
+    int left2 = ++mid;
+    int right1 = --mid;
+    if (left < right1)
+        quick_sort(li, left, right1);
+    if (left2 < right)
+        quick_sort(li, left2, right);
+}
+int main()
+{
+    int* li = generateRandomArray(10, 0, 9);
+    for (int i = 0; i < 10; i++)
+    {
+        cout << *(li + i) << ' ';
+    }
+    cout << endl;
+    quick_sort(li, 0, 9);
+    for (int i = 0; i < 10; i++)
+    {
+        cout << *(li + i) << ' ';
+    }
+    return 0;
+}
+```
+
+## 2. 结构体
 
 结构体属于用户自定义的数据类型，允许用户存储不同的数据类型
 语法：`struct 结构体名 {结构体成员列表};`
@@ -149,7 +230,7 @@ int main()
 }
 ```
 
-### 结构体数组
+### 2.1. 结构体数组
 
 语法：`struct 结构体名 数组名[元素个数] = { {},{},...,{} };`
 
@@ -162,7 +243,7 @@ struct Student s0[3]=
 };
 ```
 
-### 结构体指针
+### 2.2. 结构体指针
 
 利用操作符`->`可以通过结构体指针访问结构体属性
 
@@ -175,30 +256,68 @@ cout << (*p).age << endl;//还是张三的age
 cout << p[1].age << endl;//还是李四的age
 ```
 
-### 结构体嵌套结构体
+### 2.3. 结构体嵌套结构体
+
+结构体中如何嵌套结构体数组？
 
 ```cpp
-struct Teacher
+struct student
+{
+    string name;
+    int score;
+};
+struct teacher
 {
     int id;
-    int classid;
-    struct Student* stulist;
+    struct student stu[5];
 };
-struct Teacher t1 =
+void setT(struct teacher t[], int len)
 {
-    007,
-    399,
-    p
-};
+    for (int i = 0; i < len; i++)
+    {
+        t[i].id = i;
+        for (int j = 0; j < 5; j++)
+        {
+            t[i].stu[j].name = 'a';
+            t[i].stu[j].score = 100;
+        }
+    }
+}
 ```
 
-**遗留问题**：结构体中如何嵌套结构体数组？
-
-### 结构体做函数参数
+### 2.4. 结构体做函数参数
 
 在给函数传递结构体时可以用**形参**传递也可以用**指针**传递，在变量占用空间很大时（例如数组）传递指针会仅占用数个字节，大大节省空间
 
-### 结构体中 const 使用场景
+**补充**：字符串的高阶使用技巧
+
+```cpp
+void setT(struct teacher t[], int len)
+{
+    string name_seed = "ABCDE";
+    for (int i = 0; i < len; i++)
+    {
+        t[i].name = "Teacher_";
+        t[i].name += name_seed[i];
+        for (int j = 0; j < 5; j++)
+        {
+            t[i].stu[j].name = "Student_";
+            t[i].stu[j].name += name_seed[j];
+            int random = rand() % 61 + 40;
+            t[i].stu[j].score = random;
+        }
+    }
+}
+```
+
+**补充**：随机数种子
+
+```cpp
+srand((unsigned int)time(NULL));
+int random = rand() % 61 + 40;//分数从40~100随机
+```
+
+### 2.5. 结构体中 const 使用场景
 
 用于指针型函数参数，将导致指针处于只读状态，防止误操作
 > const int* p; // 可以修改 p 的指向，无法利用 p 修改所指内存的数据
